@@ -1,0 +1,31 @@
+name: AI News Agent
+
+on:
+  schedule:
+    # Запуск каждый час (в 15 минут)
+    - cron: '15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  post-news:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install requests
+          pip install urllib3
+      
+      - name: Run news agent
+        run: python news_agent_final.py
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          BASIC_AUTH_KEY: ${{ secrets.BASIC_AUTH_KEY }}

@@ -1,0 +1,2 @@
+PROMPT: Make a futuristic illustration for tech news: ИИ-веганство — новый тренд? Технологии подарили .... Style: minimalistic but powerful, blue and purple color scheme, glowing elements, clean composition
+Для реальной генерации нужен доступ к Google Imagen API

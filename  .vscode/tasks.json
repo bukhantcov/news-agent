@@ -1,0 +1,60 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "🐍 Create Virtual Environment",
+            "type": "shell",
+            "command": "python3 -m venv venv",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "📦 Install Dependencies",
+            "type": "shell",
+            "command": "pip install -r requirements.txt",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "🚀 Run AI Agents",
+            "type": "shell",
+            "command": "python main.py",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "group": "build"
+            }
+        },
+        {
+            "label": "🧹 Format Code (Black)",
+            "type": "shell",
+            "command": "black .",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "never"
+            }
+        },
+        {
+            "label": "🔍 Check Code (Flake8)",
+            "type": "shell",
+            "command": "flake8 . --max-line-length=120",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "📊 Run Tests (if exists)",
+            "type": "shell",
+            "command": "pytest tests/",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always"
+            }
+        }
+    ]
+}

@@ -1,0 +1,2 @@
+PROMPT: Create a conceptual artwork representing AI breakthrough: Применение ИИ на производстве — 6 реальных .... Style: digital painting, vibrant colors, glowing neural networks in background, magazine cover quality
+Для реальной генерации нужен доступ к Google Imagen API

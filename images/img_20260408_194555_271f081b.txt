@@ -1,0 +1,2 @@
+PROMPT: Create a hyper-realistic illustration for news: Как искусственный интеллект захватит мир всего за 2 .... Style: cinematic lighting, dramatic atmosphere, futuristic technology theme, 4K quality, vertical format for social media
+Для реальной генерации нужен доступ к Google Imagen API

@@ -1,0 +1,2 @@
+PROMPT: Create a conceptual artwork representing AI breakthrough: ИИ 2026: Технологии, которые выживут в продакшне. Style: digital painting, vibrant colors, glowing neural networks in background, magazine cover quality
+Для реальной генерации нужен доступ к Google Imagen API

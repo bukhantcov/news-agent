@@ -1,0 +1,2 @@
+PROMPT: Generate a stunning visual for article about AI technology: Искусственный Интеллект незаметно меняет твою .... Style: cyberpunk aesthetic, neon accents, holographic displays, professional photography lighting, 16:9 aspect ratio
+Для реальной генерации нужен доступ к Google Imagen API

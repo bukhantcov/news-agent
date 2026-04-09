@@ -1,0 +1,2 @@
+PROMPT: Generate a stunning visual for article about AI technology: Как искусственный интеллект захватит мир всего за 2 .... Style: cyberpunk aesthetic, neon accents, holographic displays, professional photography lighting, 16:9 aspect ratio
+Для реальной генерации нужен доступ к Google Imagen API

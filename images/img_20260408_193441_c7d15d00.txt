@@ -1,0 +1,2 @@
+PROMPT: Create a conceptual artwork representing AI breakthrough: Основы ИИ: введение в искусственный интеллект. Style: digital painting, vibrant colors, glowing neural networks in background, magazine cover quality
+Для реальной генерации нужен доступ к Google Imagen API
