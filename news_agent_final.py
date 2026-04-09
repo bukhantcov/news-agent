@@ -1,15 +1,24 @@
 import requests
 import json
 import os
+import sys
 import re
 from datetime import datetime
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ==================== КОНФИГУРАЦИЯ ====================
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "8738939654:AAEhLC_6dk4IxwurgadWMWXXoGcE1DXRE9o")
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
 CHANNEL_ID = "@DenisBukhancov_CRM_AI"
-BASIC_AUTH_KEY = os.environ.get("BASIC_AUTH_KEY", "MDE5ZDcxZjYtNDhlZS03YzA5LWE1ZjEtY2ExMDFjOGIzMzJmOjYyYmVkNTdhLWMyNjEtNDNkOS1iY2ZjLTlkZDk4ZTc0NTVmNw==")
+BASIC_AUTH_KEY = os.environ.get("BASIC_AUTH_KEY")
+
+# Проверка наличия секретов
+if not BOT_TOKEN:
+    print("❌ Ошибка: BOT_TOKEN не найден в переменных окружения")
+    sys.exit(1)
+if not BASIC_AUTH_KEY:
+    print("❌ Ошибка: BASIC_AUTH_KEY не найден в переменных окружения")
+    sys.exit(1)
 
 DB_FILE = "published_news.json"
 
@@ -35,6 +44,7 @@ def mark_published(title):
 
 # ==================== АВТОРИЗАЦИЯ ====================
 def get_access_token():
+    print("🔄 Получение токена GigaChat...")
     url = "https://ngw.devices.sberbank.ru:9443/api/v2/oauth"
     headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -45,19 +55,27 @@ def get_access_token():
     data = {'scope': 'GIGACHAT_API_PERS'}
     try:
         response = requests.post(url, headers=headers, data=data, verify=False, timeout=30)
+        print(f"   Статус: {response.status_code}")
         if response.status_code == 200:
-            return response.json().get('access_token')
-    except:
-        pass
+            token = response.json().get('access_token')
+            print("   ✅ Токен получен")
+            return token
+        else:
+            print(f"   ❌ Ошибка: {response.text[:200]}")
+    except Exception as e:
+        print(f"   ❌ Исключение: {e}")
     return None
 
 # ==================== ОТПРАВКА В TELEGRAM ====================
 def send_to_telegram(text):
+    print("📤 Отправка в Telegram...")
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     try:
-        r = requests.post(url, json={'chat_id': CHANNEL_ID, 'text': text, 'parse_mode': 'HTML', 'disable_web_page_preview': True}, timeout=30)
-        return r.status_code == 200
-    except:
+        response = requests.post(url, json={'chat_id': CHANNEL_ID, 'text': text, 'parse_mode': 'HTML', 'disable_web_page_preview': True}, timeout=30)
+        print(f"   Статус: {response.status_code}")
+        return response.status_code == 200
+    except Exception as e:
+        print(f"   ❌ Ошибка: {e}")
         return False
 
 def escape_html(text):
@@ -67,6 +85,7 @@ def escape_html(text):
 
 # ==================== ПОЛУЧЕНИЕ НОВОСТЕЙ ====================
 def get_news(access_token):
+    print("🔍 Запрос новостей к GigaChat...")
     prompt = """Ты — профессиональный новостной аналитик.
 
 Найди в интернете 5 самых важных НОВОСТЕЙ из мира ИИ за последние 24 часа.
@@ -81,8 +100,6 @@ def get_news(access_token):
 - theverge.com
 - venturebeat.com
 - wired.com
-- habr.com
-- vc.ru
 
 Требования:
 1. КОНКРЕТНОЕ СОБЫТИЕ (релиз, анонс, обновление, партнерство)
@@ -104,14 +121,20 @@ def get_news(access_token):
     
     try:
         response = requests.post(url, headers=headers, json=data, verify=False, timeout=60)
+        print(f"   Статус: {response.status_code}")
         if response.status_code == 200:
-            return response.json()['choices'][0]['message']['content']
-    except:
-        pass
+            content = response.json()['choices'][0]['message']['content']
+            print(f"   ✅ Получен ответ, длина: {len(content)} символов")
+            return content
+        else:
+            print(f"   ❌ Ошибка: {response.text[:200]}")
+    except Exception as e:
+        print(f"   ❌ Исключение: {e}")
     return None
 
 def parse_news(text):
     if not text or "НЕТ НОВОСТЕЙ" in text:
+        print("   📭 Новостей нет")
         return []
     news_list = []
     for block in text.split('📌'):
@@ -129,6 +152,7 @@ def parse_news(text):
                 news['url'] = line.replace('ССЫЛКА:', '').strip()
         if news.get('title'):
             news_list.append(news)
+    print(f"   📊 Распаршено новостей: {len(news_list)}")
     return news_list
 
 def create_post(news):
@@ -143,7 +167,7 @@ def create_post(news):
     post += f"\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n📌 @DenisBukhancov_CRM_AI\n📅 {datetime.now().strftime('%d.%m.%Y | %H:%M')}\n#AI #Новости #Технологии"
     return post
 
-# ==================== ОСНОВНАЯ ФУНКЦИЯ (БЕЗ ЦИКЛА) ====================
+# ==================== ОСНОВНАЯ ФУНКЦИЯ ====================
 def main():
     print("="*60)
     print("🤖 NEWS AGENT (GitHub Actions)")
@@ -155,7 +179,6 @@ def main():
         print("❌ Не удалось получить токен")
         return 1
     
-    print("🔍 Поиск новостей...")
     response = get_news(token)
     if not response:
         print("❌ GigaChat не ответил")
@@ -163,10 +186,8 @@ def main():
     
     news_list = parse_news(response)
     if not news_list:
-        print("📭 Новостей нет")
+        print("✅ Новостей нет — завершаем успешно")
         return 0
-    
-    print(f"📊 Найдено новостей: {len(news_list)}")
     
     for news in news_list:
         if is_published(news['title']):
@@ -181,11 +202,11 @@ def main():
             print(f"✅ ОПУБЛИКОВАНО!")
             return 0
         else:
-            print(f"❌ Ошибка отправки")
+            print(f"❌ Ошибка отправки в Telegram")
             return 1
     
     print("✅ Завершено (нет новых новостей)")
     return 0
 
 if __name__ == "__main__":
-    exit(main())
+    sys.exit(main())
