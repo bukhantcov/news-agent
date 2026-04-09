@@ -143,7 +143,7 @@ def create_post(news):
     post += f"\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n📌 @DenisBukhancov_CRM_AI\n📅 {datetime.now().strftime('%d.%m.%Y | %H:%M')}\n#AI #Новости #Технологии"
     return post
 
-# ==================== ОСНОВНАЯ ФУНКЦИЯ ====================
+# ==================== ОСНОВНАЯ ФУНКЦИЯ (БЕЗ ЦИКЛА) ====================
 def main():
     print("="*60)
     print("🤖 NEWS AGENT (GitHub Actions)")
@@ -153,18 +153,18 @@ def main():
     token = get_access_token()
     if not token:
         print("❌ Не удалось получить токен")
-        return
+        return 1
     
     print("🔍 Поиск новостей...")
     response = get_news(token)
     if not response:
         print("❌ GigaChat не ответил")
-        return
+        return 1
     
     news_list = parse_news(response)
     if not news_list:
         print("📭 Новостей нет")
-        return
+        return 0
     
     print(f"📊 Найдено новостей: {len(news_list)}")
     
@@ -179,11 +179,13 @@ def main():
         if send_to_telegram(post):
             mark_published(news['title'])
             print(f"✅ ОПУБЛИКОВАНО!")
-            return
+            return 0
         else:
             print(f"❌ Ошибка отправки")
+            return 1
     
-    print("✅ Завершено")
+    print("✅ Завершено (нет новых новостей)")
+    return 0
 
 if __name__ == "__main__":
-    main()
+    exit(main())
