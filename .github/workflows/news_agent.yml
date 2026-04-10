@@ -15,8 +15,11 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install dependencies
-        run: pip install requests
-      - name: Run test telegram
-        run: python test_telegram.py
+        run: |
+          pip install requests urllib3
+          pip install ddgs
+      - name: Run news agent
+        run: python news_agent_v2.py
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          BASIC_AUTH_KEY: ${{ secrets.BASIC_AUTH_KEY }}
