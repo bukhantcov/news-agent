@@ -19,8 +19,9 @@ jobs:
           pip install requests urllib3
           pip install ddgs
           pip install beautifulsoup4
+          pip install pytz
       - name: Run news agent
-        run: python news_agent_v5.py
+        run: python news_agent_v6.py
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           BASIC_AUTH_KEY: ${{ secrets.BASIC_AUTH_KEY }}
