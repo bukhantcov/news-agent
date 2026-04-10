@@ -18,8 +18,9 @@ jobs:
         run: |
           pip install requests urllib3
           pip install ddgs
+          pip install beautifulsoup4
       - name: Run news agent
-        run: python news_agent_v2.py
+        run: python news_agent_v4.py
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           BASIC_AUTH_KEY: ${{ secrets.BASIC_AUTH_KEY }}
