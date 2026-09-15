@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 # ============================================================
 # КОНФИГУРАЦИЯ
 # ============================================================
-BOT_TOKEN = "8738939654:AAEhLC_6dk4IxwurgadWMWXXoGcE1DXRE9o"
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 CHANNEL_ID = "@DenisBukhancov_CRM_AI"
 NEWS_API_KEY = "e08eafb22acc4ad983888ecbcdb492d4"
 

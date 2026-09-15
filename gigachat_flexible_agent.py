@@ -7,9 +7,9 @@ from datetime import datetime
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-BOT_TOKEN = "8738939654:AAEhLC_6dk4IxwurgadWMWXXoGcE1DXRE9o"
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 CHANNEL_ID = "@DenisBukhancov_CRM_AI"
-BASIC_AUTH_KEY = "MDE5ZDcxZjYtNDhlZS03YzA5LWE1ZjEtY2ExMDFjOGIzMzJmOjYyYmVkNTdhLWMyNjEtNDNkOS1iY2ZjLTlkZDk4ZTc0NTVmNw=="
+BASIC_AUTH_KEY = os.environ.get("BASIC_AUTH_KEY", "")
 
 DB_FILE = "gigachat_flexible_published.json"
 
