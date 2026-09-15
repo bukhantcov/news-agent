@@ -35,6 +35,13 @@ def main():
         print("BOT_TOKEN or UKLAD_CHANNEL_ID is not set")
         return 1
 
+    if "--check" in sys.argv:
+        bot = telegram(token, "getMe", {})
+        member = telegram(token, "getChatMember", {"chat_id": channel_id, "user_id": bot["id"]})
+        print(f"Bot @{bot['username']} in {channel_id}: status={member['status']}, "
+              f"can_post={member.get('can_post_messages')}, can_edit={member.get('can_edit_messages')}")
+        return 0
+
     published = load_published()
     queue = [p for p in sorted(POSTS_DIR.glob("*.html")) if p.name not in published]
     if not queue:
