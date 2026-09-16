@@ -24,3 +24,33 @@
 - Secret `BOT_TOKEN` (shared with the news agent), repository variable `UKLAD_CHANNEL_ID` (e.g. `@uklad_app`)
 - The bot must be an admin of the channel with post and edit rights
 - To add content: drop `NNN-slug.html` into `uklad/posts/` and push
+
+## Polza channel posters (Telegram)
+
+Two independent FIFO queues, both posting to `@Polza_digital_CRM`, both mirrored to Яндекс.Дзен automatically by Telegram's own Дзен integration on that channel:
+
+- `polza/poster.py` — archive queue, posts adapted from already-live blog articles (`polza/posts/*.html`). Workflow `.github/workflows/polza_poster.yml`, daily 10:00 MSK.
+- `polza/fresh/poster.py` — synced 1:1 with the blog's own daily publish order (`polza/fresh/posts/*.html`). Workflow `.github/workflows/polza_fresh_poster.yml`, daily 10:05 MSK.
+
+Both reuse the same secret `POLZA_BOT_TOKEN` and repository variable `POLZA_CHANNEL_ID`. Same file conventions as `uklad/poster.py` (`-pin` marker, `published.json` tracker committed back by the workflow).
+
+## Polza Threads poster
+
+`polza/social/post_threads.py` posts to `https://www.threads.com/@polza_digital_assistant` via a Playwright browser session — same approach as `uklad/social`, since there is no official Threads API access here. **Runs locally only, never from GitHub Actions** — Meta blocks datacenter-IP browser automation, and the session cookie is never committed.
+
+Setup (once, on your own machine):
+
+```
+pip install -r polza/social/requirements.txt
+playwright install webkit
+python -m polza.social.login_threads   # visible window, log in by hand
+```
+
+Then, whenever you want to post:
+
+```
+python -m polza.social.post_threads --check   # confirm the session still works
+python -m polza.social.post_threads            # posts the next queued item
+```
+
+Queue: `polza/social/posts/` — a `.txt` file is a single post, a `.json` file is a list of strings posted as a thread (first post + "Дополнить ветку" for each next line). Published filenames tracked in `polza/social/published.json`. Content here is written in the account's own casual first-person voice — do not reuse the Telegram copy verbatim.
