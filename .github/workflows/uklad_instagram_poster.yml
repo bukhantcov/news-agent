@@ -1,0 +1,52 @@
+name: Uklad Instagram Poster
+
+# Только ручной запуск, пока headless-постинг не проверен вживую (как
+# было с Threads). Крон включаем после успешного dry_run=false.
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Загрузить карточку и подпись, но не жать "Поделиться"'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: uklad-instagram-poster
+
+jobs:
+  post:
+    # self-hosted: см. uklad_threads_poster.yml — GitHub-hosted бьёт 4xx
+    # с дата-центрового IP, Meta режет такие запросы на уровне WAF.
+    runs-on: [self-hosted, uklad-social]
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip3 install --quiet playwright
+      - run: python3 -m playwright install webkit
+      - name: Publish next card
+        env:
+          INSTAGRAM_SESSION_STATE: ${{ secrets.INSTAGRAM_SESSION_STATE }}
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            python3 -m uklad.social.poster_instagram --dry-run
+          else
+            python3 -m uklad.social.poster_instagram
+          fi
+      - name: Upload failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: instagram-poster-failure
+          path: uklad/social/session/recon/instagram_poster_failure.png
+          retention-days: 3
+      - name: Commit published state and rendered card
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898732+github-actions[bot]@users.noreply.github.com"
+          git add uklad/social/instagram_published.json uklad/social/templates/exports/
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(uklad): mark instagram post published"
+            git push
+          fi

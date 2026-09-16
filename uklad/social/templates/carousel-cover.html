@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:1080px; height:1350px; overflow:hidden; background:#0A0A0F; }
+  .canvas {
+    width:1080px; height:1350px; position:relative;
+    background:radial-gradient(ellipse at 50% 46%, #14141F 0%, #0A0A0F 65%);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .kicker {
+    font-family:'Manrope',sans-serif; font-weight:700; font-size:22px; letter-spacing:6px;
+    color:#D4A853; text-transform:uppercase; margin-bottom:40px;
+  }
+  .title {
+    font-family:'Cormorant Garamond',serif; font-weight:700; font-size:92px; line-height:1.14;
+    color:#F0D48A; text-align:center; width:840px;
+  }
+  .subtitle {
+    margin-top:38px; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:36px;
+    color:#F7F4EE; text-align:center; width:760px; opacity:0.85; line-height:1.4;
+  }
+  .swipe {
+    position:absolute; bottom:150px; font-family:'Manrope',sans-serif; font-weight:700; font-size:20px;
+    letter-spacing:3px; color:#F0ECE4; opacity:0.4; text-transform:uppercase;
+  }
+  .foot {
+    position:absolute; bottom:86px; display:flex; flex-direction:column; align-items:center; gap:6px;
+  }
+  .foot .brand { font-family:'Manrope',sans-serif; font-weight:700; font-size:20px; letter-spacing:5px; color:#D4A853; }
+  .foot .handle { font-family:'Manrope',sans-serif; font-weight:500; font-size:17px; color:#F0ECE4; opacity:0.55; }
+</style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="kicker">{{KICKER}}</div>
+    <div class="title">{{TITLE}}</div>
+    <div class="subtitle">{{SUBTITLE}}</div>
+    <div class="swipe">Листайте →</div>
+    <div class="foot">
+      <div class="brand">УКЛАД</div>
+      <div class="handle">@ukladapp</div>
+    </div>
+  </div>
+</body>
+</html>
