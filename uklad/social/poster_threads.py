@@ -58,6 +58,25 @@ def _ensure_session_file() -> Path:
     return session_path
 
 
+DEBUG_DIR = BASE / "session" / "recon"
+
+
+async def _dump_debug(page) -> None:
+    """Диагностика на неожиданный отказ: скриншот + видимый текст в лог/артефакт."""
+    DEBUG_DIR.mkdir(parents=True, exist_ok=True)
+    shot = DEBUG_DIR / "threads_poster_failure.png"
+    try:
+        await page.screenshot(path=str(shot), timeout=8000)
+        print(f"Скриншот отказа: {shot}")
+    except Exception as e:
+        print(f"Скриншот не удался: {e}")
+    try:
+        body_text = await page.evaluate("document.body.innerText")
+        print("BODY_SNIPPET:", body_text[:500].replace("\n", " | "))
+    except Exception as e:
+        print(f"Не удалось прочитать текст страницы: {e}")
+
+
 async def publish_one(text: str, dry_run: bool) -> bool:
     session_path = _ensure_session_file()
 
@@ -77,6 +96,7 @@ async def publish_one(text: str, dry_run: bool) -> bool:
         compose_btn = page.locator('svg[aria-label="Создать"]:visible').first
         if not await compose_btn.count():
             print("Не нашёл кнопку 'Создать' — вероятно, сессия истекла или вёрстка сменилась")
+            await _dump_debug(page)
             return False
         await compose_btn.click()
         await page.wait_for_timeout(2000)
@@ -86,6 +106,7 @@ async def publish_one(text: str, dry_run: bool) -> bool:
         editor = scope.locator('div[role="textbox"]').first
         if not await editor.count():
             print("Не нашёл поле ввода поста")
+            await _dump_debug(page)
             return False
 
         await editor.click()
