@@ -19,22 +19,22 @@ concurrency:
 
 jobs:
   post:
-    runs-on: ubuntu-latest
+    # self-hosted: GitHub-хостед раннер бьёт с дата-центрового IP,
+    # Threads такие запросы режет 4xx на уровне WAF. Раннер на маке
+    # владельца — тот же IP, с которого сохранялась сессия.
+    runs-on: [self-hosted, uklad-social]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - run: pip install playwright
-      - run: playwright install --with-deps webkit
+      - run: pip3 install --quiet playwright
+      - run: python3 -m playwright install webkit
       - name: Publish next thread
         env:
           THREADS_SESSION_STATE: ${{ secrets.THREADS_SESSION_STATE }}
         run: |
           if [ "${{ inputs.dry_run }}" = "true" ]; then
-            python -m uklad.social.poster_threads --dry-run
+            python3 -m uklad.social.poster_threads --dry-run
           else
-            python -m uklad.social.poster_threads
+            python3 -m uklad.social.poster_threads
           fi
       - name: Upload failure diagnostics
         if: failure()
