@@ -1,9 +1,9 @@
-name: Polza Channel Poster
+name: Polza Fresh Poster (synced with blog)
 
 on:
   schedule:
-    # Daily at 10:00 MSK — archive queue
-    - cron: '0 7 * * *'
+    # Daily at 10:05 MSK — one post per day, matching the blog's daily article
+    - cron: '5 7 * * *'
   workflow_dispatch:
     inputs:
       check_only:
@@ -15,7 +15,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: polza-poster
+  group: polza-fresh-poster
 
 jobs:
   post:
@@ -28,13 +28,13 @@ jobs:
       - run: pip install requests
       - name: Check bot access
         if: inputs.check_only
-        run: python polza/poster.py --check
+        run: python polza/fresh/poster.py --check
         env:
           POLZA_BOT_TOKEN: ${{ secrets.POLZA_BOT_TOKEN }}
           POLZA_CHANNEL_ID: ${{ vars.POLZA_CHANNEL_ID }}
       - name: Publish next post
         if: ${{ !inputs.check_only }}
-        run: python polza/poster.py
+        run: python polza/fresh/poster.py
         env:
           POLZA_BOT_TOKEN: ${{ secrets.POLZA_BOT_TOKEN }}
           POLZA_CHANNEL_ID: ${{ vars.POLZA_CHANNEL_ID }}
@@ -43,8 +43,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898732+github-actions[bot]@users.noreply.github.com"
-          git add polza/published.json
+          git add polza/fresh/published.json
           if ! git diff --cached --quiet; then
-            git commit -m "chore(polza): mark post published"
+            git commit -m "chore(polza-fresh): mark post published"
             git push
           fi
