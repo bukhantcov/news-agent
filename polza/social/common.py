@@ -22,7 +22,7 @@ async def login_and_save_session(login_url: str, session_path: Path, timeout_ms:
     session_path.parent.mkdir(parents=True, exist_ok=True)
 
     async with async_playwright() as pw:
-        browser = await pw.webkit.launch(headless=False)
+        browser = await pw.chromium.launch(headless=False)
         try:
             context = await browser.new_context(locale="ru-RU")
             page = await context.new_page()
@@ -61,9 +61,7 @@ class PostSession:
 
     async def __aenter__(self) -> "PostSession":
         self._pw = await async_playwright().start()
-        # WebKit, не Chromium: сессия выдана Safari, и совпадающий движок
-        # избегает несовпадения фингерпринта, которое Meta блокирует как подозрительное.
-        self._browser = await self._pw.webkit.launch(headless=self.headless)
+        self._browser = await self._pw.chromium.launch(headless=self.headless)
         context = await self._browser.new_context(
             locale="ru-RU",
             storage_state=str(self.session_path),
