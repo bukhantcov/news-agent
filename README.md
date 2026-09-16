@@ -42,7 +42,7 @@ Setup (once, on your own machine):
 
 ```
 pip install -r polza/social/requirements.txt
-playwright install webkit
+playwright install chromium
 python -m polza.social.login_threads   # visible window, log in by hand
 ```
 
