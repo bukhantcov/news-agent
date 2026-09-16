@@ -53,4 +53,6 @@ python -m polza.social.post_threads --check   # confirm the session still works
 python -m polza.social.post_threads            # posts the next queued item
 ```
 
-Queue: `polza/social/posts/` — a `.txt` file is a single post, a `.json` file is a list of strings posted as a thread (first post + "Дополнить ветку" for each next line). Published filenames tracked in `polza/social/published.json`. Content here is written in the account's own casual first-person voice — do not reuse the Telegram copy verbatim.
+Queue: `polza/social/posts/` — a `.txt` file is a single post, a `.json` file is a list of strings posted as a thread (first post + "Дополнить ветку" for each next line). Published filenames tracked in `polza/social/published.json`. Content here is written in the account's own casual first-person voice (the assistant persona is female — feminine verb forms) — do not reuse the Telegram copy verbatim.
+
+Posts 001–003 were actually published by hand through a real logged-in Chrome tab rather than this script — WebKit rendered blank on first try, and the Playwright anti-detection fixes that would've made Chromium reliable here (persistent profile, `--disable-blink-features=AutomationControlled`) were judged too close to bot-detection evasion to ship. `post_threads.py` is still here and correct for whenever that's revisited; `published.json` reflects the true state either way so the queue doesn't duplicate.
