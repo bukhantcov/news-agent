@@ -1,0 +1,47 @@
+name: Uklad Threads Poster
+
+# Только ручной запуск, пока headless-постинг не проверен вживую.
+# Крон (по аналогии с uklad_poster.yml) включаем отдельным PR после
+# успешного ручного прогона с dry_run=false.
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Ввести текст, но не жать "Опубликовать"'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: uklad-threads-poster
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install playwright
+      - run: playwright install --with-deps webkit
+      - name: Publish next thread
+        env:
+          THREADS_SESSION_STATE: ${{ secrets.THREADS_SESSION_STATE }}
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            python -m uklad.social.poster_threads --dry-run
+          else
+            python -m uklad.social.poster_threads
+          fi
+      - name: Commit published state
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898732+github-actions[bot]@users.noreply.github.com"
+          git add uklad/social/threads_published.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(uklad): mark threads post published"
+            git push
+          fi

@@ -18,3 +18,7 @@ logs/
 # Reports (опционально)
 reports/*.md
 reports/*.pdf
+
+# Social poster: сессии браузера и рендер — не в git
+uklad/social/session/*.json
+uklad/social/reels/out/
