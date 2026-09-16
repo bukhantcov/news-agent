@@ -17,6 +17,7 @@ recon_compose.py (Playwright + сохранённые cookies), но headless и
 """
 
 import asyncio
+import base64
 import json
 import os
 import sys
@@ -47,7 +48,13 @@ def _ensure_session_file() -> Path:
             "Нет ни session/threads_state.json, ни переменной THREADS_SESSION_STATE"
         )
     session_path.parent.mkdir(parents=True, exist_ok=True)
-    session_path.write_text(state, encoding="utf-8")
+    # Секрет хранится в base64 (см. launch-checklist) — обычный текст,
+    # но так безопаснее копипастить в `gh secret set` без потери переносов строк.
+    try:
+        raw = base64.b64decode(state).decode("utf-8")
+    except (ValueError, UnicodeDecodeError):
+        raw = state  # на случай, если кто-то положит сессию как есть, без base64
+    session_path.write_text(raw, encoding="utf-8")
     return session_path
 
 
