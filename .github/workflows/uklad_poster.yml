@@ -46,5 +46,6 @@ jobs:
           git add uklad/published.json
           if ! git diff --cached --quiet; then
             git commit -m "chore(uklad): mark post published"
+            git pull --rebase --quiet
             git push
           fi

@@ -54,5 +54,6 @@ jobs:
           git add uklad/social/threads_published.json
           if ! git diff --cached --quiet; then
             git commit -m "chore(uklad): mark threads post published"
+            git pull --rebase --quiet
             git push
           fi

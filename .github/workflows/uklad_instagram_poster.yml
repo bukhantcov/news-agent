@@ -52,5 +52,6 @@ jobs:
           git add uklad/social/instagram_published.json uklad/social/templates/exports/
           if ! git diff --cached --quiet; then
             git commit -m "chore(uklad): mark instagram post published"
+            git pull --rebase --quiet
             git push
           fi
