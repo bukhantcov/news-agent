@@ -1,9 +1,10 @@
 name: Uklad Channel Poster
 
 on:
-  schedule:
-    # Every day at 10:00 MSK
-    - cron: '0 7 * * *'
+  # schedule: убран — у GH Actions schedule для этого репо опоздание
+  # 5+ часов (проверено 16-17.09.2026, включая cloud-раннер Telegram,
+  # то есть дело не в self-hosted). Время держит launchd-триггер на
+  # маке владельца: ~/actions-runner-uklad/uklad-daily-trigger.sh.
   workflow_dispatch:
     inputs:
       check_only:
