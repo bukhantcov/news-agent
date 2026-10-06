@@ -32,6 +32,14 @@ Two independent FIFO queues, both posting to `@Polza_digital_CRM`, both mirrored
 - `polza/poster.py` — archive queue, posts adapted from already-live blog articles (`polza/posts/*.html`). Workflow `.github/workflows/polza_poster.yml`, daily 10:00 MSK.
 - `polza/fresh/poster.py` — synced 1:1 with the blog's own daily publish order (`polza/fresh/posts/*.html`). Workflow `.github/workflows/polza_fresh_poster.yml`, daily 10:05 MSK.
 
+**Rule: every post goes out with a cover image.** The channel is mirrored to Дзен, which pulls the attached image along — a bare text post looks empty there. A cover is a `NNN-slug.png` next to `NNN-slug.html`; the poster then sends it as a photo with the text as caption (single message, caption limit 1024 visible chars). Build both in one go from a blog article:
+
+```
+python polza/tools/new_post.py <blog>/src/content/blog/<slug>.md archive   # or: fresh
+```
+
+Needs Google Chrome locally (renders the cover; set `CHROME` to override the path) — covers are committed, not rendered in Actions. A post without a `.png` still goes out as text but logs a `::warning::` (the pin post is exempt). Already-sent posts can't be given a photo after the fact.
+
 Both reuse the same secret `POLZA_BOT_TOKEN` and repository variable `POLZA_CHANNEL_ID`. Same file conventions as `uklad/poster.py` (`-pin` marker, `published.json` tracker committed back by the workflow).
 
 ## Polza Threads poster
